@@ -45,7 +45,7 @@ fun ProfileScreen(
 
         Button(
             onClick = {
-                //authViewModel.updateUser()
+                authViewModel.updateUser()
             },
             modifier = Modifier.fillMaxWidth()
         ) {
