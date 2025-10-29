@@ -7,19 +7,25 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.myapplication.viewmodel.AuthViewModel
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun LoginScreen(
-    authViewModel: AuthViewModel,
-    onNavigateToSignUp: () -> Unit // Função para navegar para a tela de cadastro
+    authViewModel: AuthViewModel = viewModel(),
+    onNavigateToSignUp: () -> Unit
 ) {
     var email by remember { mutableStateOf("") }
     var password by remember { mutableStateOf("") }
 
+    val feedback by authViewModel.authFeedback.collectAsState()
+    val user by authViewModel.userState.collectAsState()
+
     Column(
-        modifier = Modifier.fillMaxSize().padding(16.dp),
+        modifier = Modifier
+            .fillMaxSize()
+            .padding(16.dp),
         verticalArrangement = Arrangement.Center,
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
@@ -45,7 +51,7 @@ fun LoginScreen(
 
         Button(
             onClick = {
-
+                authViewModel.signIn(email, password)
             },
             modifier = Modifier.fillMaxWidth()
         ) {
@@ -56,6 +62,19 @@ fun LoginScreen(
 
         TextButton(onClick = onNavigateToSignUp) {
             Text("Não tem uma conta? Cadastre-se")
+        }
+
+        feedback?.let {
+            Spacer(modifier = Modifier.height(16.dp))
+            Text(
+                text = it,
+                color = if (it.contains("Erro")) MaterialTheme.colorScheme.error else MaterialTheme.colorScheme.primary
+            )
+        }
+
+        user?.let {
+            Spacer(modifier = Modifier.height(16.dp))
+            Text("Bem-vindo, ${it.displayName ?: "Usuário"}!")
         }
     }
 }

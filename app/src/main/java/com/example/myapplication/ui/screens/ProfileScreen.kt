@@ -55,7 +55,7 @@ fun ProfileScreen(
 
         Button(
             onClick = {
-
+                authViewModel.signOut()
             },
             colors = ButtonDefaults.buttonColors(containerColor = MaterialTheme.colorScheme.error),
             modifier = Modifier.fillMaxWidth()
